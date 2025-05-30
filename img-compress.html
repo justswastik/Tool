@@ -149,41 +149,43 @@
   </footer>
 
   <script>
-    const range = document.getElementById('compressionRange');
-    const valueLabel = document.getElementById('compressionValue');
-    range.addEventListener('input', () => {
-      valueLabel.textContent = range.value;
-    });
+  const range = document.getElementById('compressionRange');
+  const valueLabel = document.getElementById('compressionValue');
+  range.addEventListener('input', () => {
+    valueLabel.textContent = range.value;
+  });
 
-    function compressImage() {
-      const input = document.getElementById('imageInput');
-      const canvas = document.getElementById('canvas');
-      const ctx = canvas.getContext('2d');
-      const compression = parseFloat(document.getElementById('compressionRange').value);
-      const downloadLink = document.getElementById('downloadLink');
+  function compressImage() {
+    const input = document.getElementById('imageInput');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const compression = parseFloat(document.getElementById('compressionRange').value);
+    const downloadLink = document.getElementById('downloadLink');
 
-      if (!input.files[0]) {
-        alert('Please upload an image first.');
-        return;
-      }
-
-      const fileReader = new FileReader();
-      fileReader.onload = function(e) {
-        const img = new Image();
-        img.onload = function() {
-          canvas.width = img.width;
-          canvas.height = img.height;
-          ctx.drawImage(img, 0, 0);
-          canvas.toBlob(function(blob) {
-            const newImg = URL.createObjectURL(blob);
-            downloadLink.href = newImg;
-            downloadLink.style.display = 'inline-block';
-          }, 'image/jpeg', compression);
-        }
-        img.src = e.target.result;
-      }
-      fileReader.readAsDataURL(input.files[0]);
+    if (!input.files[0]) {
+      alert('Please upload an image first.');
+      return;
     }
-  </script>
+
+    const fileReader = new FileReader();
+    fileReader.onload = function(e) {
+      const img = new Image();
+      img.onload = function() {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        canvas.toBlob(function(blob) {
+          const newImg = URL.createObjectURL(blob);
+          downloadLink.href = newImg;
+          downloadLink.download = "compressed-image.jpg";  // ✅ Force download
+          downloadLink.style.display = 'inline-block';
+        }, 'image/jpeg', compression);
+      }
+      img.src = e.target.result;
+    }
+    fileReader.readAsDataURL(input.files[0]);
+  }
+</script>
+
 </body>
 </html>
